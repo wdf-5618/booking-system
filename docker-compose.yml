@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: goat_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: goat_db
+    ports:
+      - "5432:5432"
