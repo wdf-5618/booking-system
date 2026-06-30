@@ -11,7 +11,7 @@ const requireAuth = (req, res, next) => {
       .json({ success: false, message: "Authentication required" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
     if (err) {
       return res.status(403).json({ success: false, message: "Invalid token" });
     }
@@ -26,7 +26,7 @@ const optionalAuth = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
 
   if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
       if (err) {
         // Token မှားနေရင် Error အနေနဲ့မှတ်ထားပြီး ရှေ့ဆက်ခွင့်ပေးမယ်
         req.authError = "Invalid or expired token";
