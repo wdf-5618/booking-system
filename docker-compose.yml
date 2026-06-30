@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   db:
     image: postgres:15-alpine
@@ -10,3 +10,10 @@ services:
       POSTGRES_DB: goat_db
     ports:
       - "5432:5432"
+
+  app: # ဒီနေရာမှာ သင့် App အတွက် ထည့်ပေးရပါမယ်
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/goat_db

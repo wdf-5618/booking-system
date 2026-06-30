@@ -8,14 +8,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Docker Compose ကို သုံးပြီး Service အားလုံးကို Run မယ်
-      - name: Start containers
-        run: docker-compose up -d
+      - name: Build and start
+        run: docker compose up -d
 
-      # Container အလုပ်လုပ်ဖို့ စောင့်ပေးမယ်
+      # Database အသင့်ဖြစ်သည်အထိ စောင့်ရန်
       - name: Wait for database
-        run: sleep 10
+        run: sleep 15
 
-      # Container ထဲမှာ Test ကို Run မယ်
+      # Knex Migration ကို Run ခြင်း
+      - name: Run migrations
+        run: docker compose exec -T app npx knex migrate:latest --env test
+
       - name: Run tests
-        run: docker-compose exec -T app npm test
+        run: docker compose exec -T app npm test
