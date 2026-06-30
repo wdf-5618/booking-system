@@ -15,7 +15,8 @@ jobs:
       - name: Wait for database
         run: |
           echo "Waiting for database..."
-          docker compose exec -T db pg_isready -U user -d goat_db
+          # docker compose exec db ထဲမှာ run တာဖြစ်လို့ localhost ကိုပဲ သုံးပါ
+          docker compose exec -T db pg_isready -h localhost -p 5432 -U user
 
       - name: Run migrations
         run: docker compose exec -T app npx knex migrate:latest --env test
