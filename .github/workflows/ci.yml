@@ -30,4 +30,10 @@ jobs:
         run: docker compose exec -T app npx knex migrate:latest --env test
 
       - name: Run tests
-        run: docker compose exec -e DB_HOST=db -e DB_USER=user -e DB_PASSWORD=password -e DB_NAME=goat_db app npm test
+        run: |
+          docker compose exec \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            app npm test
