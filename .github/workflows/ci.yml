@@ -11,16 +11,23 @@ jobs:
       - name: Start containers
         run: docker compose up -d
 
-      # Database အဆင်သင့်ဖြစ်သည်အထိ စောင့်ရန်
+      # Database အဆင်သင့်ဖြစ်သည်အထိ Loop ပတ်ပြီးစောင့်ရန်
       - name: Wait for database
         run: |
           echo "Waiting for database..."
-          # docker compose exec db ထဲမှာ run တာဖြစ်လို့ localhost ကိုပဲ သုံးပါ
-          docker compose exec -T db pg_isready -h localhost -p 5432 -U user
+          for i in {1..20}; do
+            if docker compose exec -T db pg_isready -h localhost -p 5432 -U user; then
+              echo "Database is ready!"
+              exit 0
+            fi
+            echo "Database not ready yet, retrying in 2 seconds..."
+            sleep 2
+          done
+          echo "Timeout waiting for database"
+          exit 1
 
       - name: Run migrations
         run: docker compose exec -T app npx knex migrate:latest --env test
 
       - name: Run tests
-        # run: docker compose exec -T app npm test
         run: docker compose exec -e DB_HOST=db -e DB_USER=user -e DB_PASSWORD=password -e DB_NAME=goat_db app npm test
