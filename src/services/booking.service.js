@@ -48,7 +48,7 @@ class BookingService {
         "bookings.id",
         "bookings.status",
         "bookings.created_at",
-        "tours.name as tour_name",
+        "tours.title as tour_name",
         "tours.price_thb",
       )
       .where("bookings.user_id", userId)

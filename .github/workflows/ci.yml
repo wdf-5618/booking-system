@@ -8,16 +8,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build and start
+      - name: Start containers
         run: docker compose up -d
 
-      # Database အသင့်ဖြစ်သည်အထိ စောင့်ရန်
+      # Database အဆင်သင့်ဖြစ်သည်အထိ စောင့်ရန်
       - name: Wait for database
-        run: sleep 15
+        run: |
+          echo "Waiting for database..."
+          docker compose exec -T db pg_isready -U user -d goat_db
 
-      # Knex Migration ကို Run ခြင်း
       - name: Run migrations
         run: docker compose exec -T app npx knex migrate:latest --env test
 
       - name: Run tests
-        run: docker compose exec -T app npm test
+        # run: docker compose exec -T app npm test
+        run: docker compose exec -e DB_HOST=db -e DB_USER=user -e DB_PASSWORD=password -e DB_NAME=goat_db app npm test

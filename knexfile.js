@@ -15,17 +15,26 @@ module.exports = {
     migrations: { directory: "./migrations" },
   },
 
-  test: {
-    // CI/CD အတွက် အထူးလိုအပ်သော Test Environment
-    client: "pg",
-    connection: {
-      host: process.env.DB_HOST || "db", // Docker container နာမည်
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-    },
-    migrations: { directory: "./migrations" },
-  },
+  test: (() => {
+    const testClient =
+      process.env.DB_CLIENT || (process.env.DB_HOST ? "pg" : "sqlite3");
+    const connection =
+      testClient === "sqlite3"
+        ? { filename: "./test.sqlite3" }
+        : {
+            host: process.env.DB_HOST || "db",
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+          };
+
+    return {
+      client: testClient,
+      connection,
+      useNullAsDefault: testClient === "sqlite3",
+      migrations: { directory: "./migrations" },
+    };
+  })(),
 
   production: {
     client: "pg",

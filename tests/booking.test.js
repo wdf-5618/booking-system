@@ -31,26 +31,26 @@ describe("BookingService Integration Test", () => {
     const uniqueEmail = `test${Date.now()}@example.com`;
 
     // ၁။ Setup Dummy User
-    const [user] = await knex("users")
-      .insert({
-        id: crypto.randomUUID(),
-        email: uniqueEmail,
-        password_hash: "dummy_hash_value",
-      })
-      .returning("id");
+    const userId = crypto.randomUUID();
+    await knex("users").insert({
+      id: userId,
+      email: uniqueEmail,
+      password_hash: "dummy_hash_value",
+    });
 
-    // ၂။ Setup Mock Tour
-    const [tour] = await knex("tours")
-      .insert({
-        title: "Test Tour",
-        price_thb: 1000,
-        total_seats: 10,
-        available_seats: 10,
-      })
-      .returning("*");
+    // ၂։ Setup Mock Tour
+    const tourId = crypto.randomUUID();
+    await knex("tours").insert({
+      id: tourId,
+      title: "Test Tour",
+      price_thb: 1000,
+      total_seats: 10,
+      available_seats: 10,
+    });
+    const tour = await knex("tours").where({ id: tourId }).first();
 
     // ၃။ Booking ဖန်တီးခြင်း
-    const booking = await bookingService.createBooking(user.id, tour.id, {});
+    const booking = await bookingService.createBooking(userId, tour.id, {});
 
     // ၄။ ရလဒ်များအား စစ်ဆေးခြင်း (Assertions)
     const updatedTour = await knex("tours").where({ id: tour.id }).first();
@@ -69,25 +69,25 @@ describe("BookingService Integration Test", () => {
       status: "succeeded",
     });
 
-    const [user] = await knex("users")
-      .insert({
-        id: crypto.randomUUID(),
-        email: `test2${Date.now()}@example.com`,
-        password_hash: "dummy_hash_value",
-      })
-      .returning("id");
+    const userId = crypto.randomUUID();
+    await knex("users").insert({
+      id: userId,
+      email: `test2${Date.now()}@example.com`,
+      password_hash: "dummy_hash_value",
+    });
 
-    const [tour] = await knex("tours")
-      .insert({
-        title: "Payment Test Tour",
-        price_thb: 500,
-        total_seats: 5,
-        available_seats: 5,
-      })
-      .returning("*");
+    const tourId = crypto.randomUUID();
+    await knex("tours").insert({
+      id: tourId,
+      title: "Payment Test Tour",
+      price_thb: 500,
+      total_seats: 5,
+      available_seats: 5,
+    });
+    const tour = await knex("tours").where({ id: tourId }).first();
 
-    // Booking ဖန်တီးခြင်း
-    await bookingService.createBooking(user.id, tour.id, {
+    // Booking ဖန်တطيبခြင်း
+    await bookingService.createBooking(userId, tour.id, {
       paymentMethod: "card",
     });
 

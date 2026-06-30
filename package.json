@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "set \"DB_CLIENT=sqlite3\"&& set \"NODE_ENV=test\"&& jest"
   },
   "keywords": [],
   "author": "",

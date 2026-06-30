@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # App ကို စတင်မယ့် Command
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]

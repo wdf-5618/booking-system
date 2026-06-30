@@ -3,11 +3,16 @@
  * @returns { Promise<void> }
  */
 exports.up = async function (knex) {
-  // UUID extension ကို အရင်ဖွင့်မယ်
-  await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+  if (knex.client.config.client === "pg") {
+    await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+  }
 
   return knex.schema.createTable("tours", (table) => {
-    table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"));
+    if (knex.client.config.client === "pg") {
+      table.uuid("id").primary().defaultTo(knex.raw("uuid_generate_v4()"));
+    } else {
+      table.string("id").primary();
+    }
     table.string("title").notNullable();
     table.text("description");
     table.decimal("price_thb", 12, 2).notNullable();

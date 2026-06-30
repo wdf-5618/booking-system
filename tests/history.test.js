@@ -10,11 +10,6 @@ jest.mock("jsonwebtoken");
 jest.mock("../src/services/booking.service");
 
 describe("GET /bookings/history", () => {
-  // Test ပြီးရင် DB Connection ပိတ်ရန်
-  afterAll(async () => {
-    await knex.destroy();
-  });
-
   it("should return history for logged-in user", async () => {
     // JWT Mock: verify လုပ်ရင် အဆင်ပြေတယ်လို့ သတ်မှတ်ပြီး user object ပြန်ပေးမယ်
     jwt.verify.mockImplementation((token, secret, callback) => {
