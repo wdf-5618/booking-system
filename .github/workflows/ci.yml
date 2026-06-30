@@ -1,15 +1,21 @@
 name: Node.js CI
 
-on: [push, pull_request] # Code Push လုပ်တိုင်း (သို့) Pull Request လုပ်တိုင်း Run မယ်
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
-      - run: npm install
-      - run: npm test
+      - uses: actions/checkout@v4
+
+      # Docker Compose ကို သုံးပြီး Service အားလုံးကို Run မယ်
+      - name: Start containers
+        run: docker-compose up -d
+
+      # Container အလုပ်လုပ်ဖို့ စောင့်ပေးမယ်
+      - name: Wait for database
+        run: sleep 10
+
+      # Container ထဲမှာ Test ကို Run မယ်
+      - name: Run tests
+        run: docker-compose exec -T app npm test
